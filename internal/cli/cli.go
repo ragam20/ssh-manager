@@ -2,6 +2,7 @@
 package cli
 
 import (
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -21,7 +22,10 @@ import (
 	"sshm/internal/tui"
 )
 
-var Version = "dev"
+//go:embed VERSION
+var versionFile string
+
+var Version = strings.TrimSpace(versionFile)
 
 const usage = `sshm — SSH management TUI
 
