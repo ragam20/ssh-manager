@@ -88,7 +88,8 @@ Requires Git, Go 1.22 or newer, Make, and internet access to download Go modules
     make install
 
 This builds and installs to `~/.local/bin`. Configure `PATH` as above, then run
-`sshm version` and `sshm doctor`. Source builds report the version as `dev`.
+`sshm version` and `sshm doctor`. Source builds report the version recorded in
+[`internal/cli/VERSION`](internal/cli/VERSION).
 To update from source, run `git pull --ff-only` followed by `make install`
 inside the checkout. To remove the executable, run `make uninstall`.
 
@@ -145,6 +146,20 @@ To install the release binary from a local checkout, run `sh install.sh`.
     internal/fsutil/      atomic writes and backups
     internal/sshcmd/      ssh arguments and execution
     internal/paths/       file locations
+
+## Release versioning
+
+Versions use `YYYY.MM.DD.N`, for example `2026.11.19.0`. Start with `.0`
+on each release date and increment the last number for each additional
+release on that date. Local builds and GitHub Releases embed the same version.
+
+Update `internal/cli/VERSION` and commit it before tagging the release.
+For example, to tag and publish a commit that contains `2026.11.19.0`:
+
+    git tag v2026.11.19.0
+    git push origin v2026.11.19.0
+
+The release workflow checks the tag against `VERSION` before publishing.
 
 ## Screenshot
 
