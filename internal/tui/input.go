@@ -8,9 +8,14 @@ func (m Model) onKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	k := msg.String()
 	m.notice = ""
 	if k == "ctrl+c" {
+		if m.inspect != nil {
+			m.inspect.cancel()
+		}
 		return m, tea.Quit
 	}
 	switch m.mode {
+	case mInspect:
+		return m.inspectKey(k), nil
 	case mHelp:
 		if k == "esc" || k == "?" || k == "q" {
 			m.mode = mNormal
