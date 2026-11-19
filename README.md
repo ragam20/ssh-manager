@@ -42,31 +42,42 @@ check the installation and launch sshm:
 
 Replace the installed binary with the latest stable release:
 
-    curl -fsSL https://raw.githubusercontent.com/ragam20/ssh-manager/main/install.sh | bash -s -- update
+    sshm update
 
-Update requires an existing installation at the selected prefix. The installer
-verifies the download before replacing the executable through an atomic rename.
+The command verifies the download before replacing the running executable
+through an atomic rename.
+
+If your version predates these built-in commands, rerun the installation
+command above once the latest release includes them. Reuse your original
+`PREFIX` if you installed to a custom location.
 
 ### Uninstall
 
-Remove the installed executable:
+Remove the installed executable after confirming its path:
 
-    curl -fsSL https://raw.githubusercontent.com/ragam20/ssh-manager/main/install.sh | bash -s -- uninstall
+    sshm uninstall
+
+Use `sshm uninstall --yes` to skip the prompt in scripts. This command works
+offline.
 
 Uninstall preserves sshm configuration, state, backups, and all files in
-`~/.ssh`, including SSH keys. Running uninstall again is harmless.
+`~/.ssh`, including SSH keys.
+
+Run the built-in commands as the user who owns the executable and its
+`bin` directory. For package manager installations, use the package manager
+to update or uninstall.
 
 ### Custom installation prefix
 
-Set `PREFIX` on the `bash` side of the pipeline. The executable is installed
-under `$PREFIX/bin`; use the same prefix for install, update, and uninstall:
+Set `PREFIX` on the `bash` side of the pipeline to install the executable
+under `$PREFIX/bin`:
 
     curl -fsSL https://raw.githubusercontent.com/ragam20/ssh-manager/main/install.sh | PREFIX="$HOME/apps/sshm" bash
-    curl -fsSL https://raw.githubusercontent.com/ragam20/ssh-manager/main/install.sh | PREFIX="$HOME/apps/sshm" bash -s -- update
-    curl -fsSL https://raw.githubusercontent.com/ragam20/ssh-manager/main/install.sh | PREFIX="$HOME/apps/sshm" bash -s -- uninstall
 
 For this example, add `$HOME/apps/sshm/bin` to your `PATH` instead of
 `$HOME/.local/bin`. The destination must be writable by your user.
+`sshm update` and `sshm uninstall` use the location of the running executable
+automatically.
 
 ### Build from source
 
@@ -81,9 +92,7 @@ This builds and installs to `~/.local/bin`. Configure `PATH` as above, then run
 To update from source, run `git pull --ff-only` followed by `make install`
 inside the checkout. To remove the executable, run `make uninstall`.
 
-From a local checkout, `sh install.sh`, `sh install.sh update`, and
-`sh install.sh uninstall` also work; install and update still download release
-binaries rather than building the checkout.
+To install the release binary from a local checkout, run `sh install.sh`.
 
 ### Troubleshooting
 
