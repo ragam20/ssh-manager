@@ -237,8 +237,11 @@ func (m Model) tunnelsKey(k string) (tea.Model, tea.Cmd) {
 		return m.openForm(m.tunnelForm(&t)), nil
 	case "D":
 		return m.ask(fmt.Sprintf("Hapus tunnel %q (%s)?", t.Name, t.Describe()), func(m Model) (Model, tea.Cmd) {
-			if m.tunUp[t.ID] {
-				_ = tunnel.Stop(t)
+			if tunnel.Running(t) {
+				if err := tunnel.Stop(t); err != nil {
+					m.notice = "stop failed: " + err.Error()
+					return m, m.refresh()
+				}
 			}
 			m.st.DeleteTunnel(t.ID)
 			m.save()
@@ -251,7 +254,7 @@ func (m Model) tunnelsKey(k string) (tea.Model, tea.Cmd) {
 			m.notice = err.Error()
 			return m, nil
 		}
-		if m.tunUp[t.ID] {
+		if tunnel.Running(t) {
 			return m, func() tea.Msg {
 				if err := tunnel.Stop(t); err != nil {
 					return opMsg{"stop failed: " + err.Error()}
