@@ -9,7 +9,8 @@ A personal TUI for managing SSH, written in Go with Bubble Tea.
 
 ### Requirements
 
-- Linux or macOS on amd64 (x86_64) or arm64 (aarch64/Apple Silicon).
+- The release binaries support Linux and macOS 12 or later on amd64 (x86_64)
+  and arm64 (aarch64/Apple Silicon).
 - Bash, `curl`, and standard command-line utilities, including `sha256sum`
   on Linux or `shasum` on macOS for checksum verification.
 - Internet access to GitHub and a published release with binaries and checksums.
@@ -154,10 +155,10 @@ on each release date and increment the last number for each additional
 release on that date. Local builds and GitHub Releases embed the same version.
 
 Update `internal/cli/VERSION` and commit it before tagging the release.
-For example, to tag and publish a commit that contains `2026.11.19.0`:
+For example, to tag and publish a commit that contains `2026.11.19.1`:
 
-    git tag v2026.11.19.0
-    git push origin v2026.11.19.0
+    git tag v2026.11.19.1
+    git push origin v2026.11.19.1
 
 The release workflow checks the tag against `VERSION` before publishing.
 
