@@ -22,7 +22,7 @@ func setup(t *testing.T) {
 
 func run(args ...string) (int, string, string) {
 	var o, e bytes.Buffer
-	c := Run(args, &o, &e)
+	c := Run(args, strings.NewReader(""), &o, &e)
 	return c, o.String(), e.String()
 }
 

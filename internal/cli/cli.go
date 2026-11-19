@@ -31,6 +31,8 @@ Usage:
   sshm connect <host>       connect directly (auto-load key)
   sshm env                  print "export SSH_AUTH_SOCK=..." (eval "$(sshm env)")
   sshm doctor               inspect the SSH environment
+  sshm update               install the latest stable release
+  sshm uninstall [--yes]    remove the installed executable
   sshm completion bash|zsh  print completion script
   sshm version | help
 
@@ -40,7 +42,7 @@ Environment:
 `
 
 // Run runs sshm and returns the exit code.
-func Run(args []string, stdout, stderr io.Writer) int {
+func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	p := paths.Default()
 	if len(args) == 0 {
 		return runTUI(p, stderr)
@@ -65,6 +67,8 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		return 0
 	case "doctor":
 		return doctor.Run(stdout, p)
+	case "update", "uninstall":
+		return lifecycle(args, stdin, stdout, stderr)
 	case "completion":
 		if len(args) != 2 {
 			fmt.Fprintln(stderr, "usage: sshm completion bash|zsh")
@@ -236,13 +240,14 @@ func missingKeys(paths []string) []string {
 const bashCompletion = `_sshm() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   if [ "$COMP_CWORD" -eq 1 ]; then
-    COMPREPLY=($(compgen -W "list connect env doctor completion version help" -- "$cur"))
+    COMPREPLY=($(compgen -W "list connect env doctor update uninstall completion version help" -- "$cur"))
     return
   fi
   case "${COMP_WORDS[1]}" in
     connect|c) COMPREPLY=($(compgen -W "$(sshm list --names 2>/dev/null)" -- "$cur")) ;;
     completion) COMPREPLY=($(compgen -W "bash zsh" -- "$cur")) ;;
     list|ls) COMPREPLY=($(compgen -W "--names --json" -- "$cur")) ;;
+    uninstall) COMPREPLY=($(compgen -W "--yes" -- "$cur")) ;;
   esac
 }
 complete -F _sshm sshm
@@ -251,7 +256,7 @@ complete -F _sshm sshm
 const zshCompletion = `#compdef sshm
 _sshm() {
   local -a cmds
-  cmds=(list:'list hosts' connect:'connect to host' env:'print export SSH_AUTH_SOCK' doctor:'inspect the environment' completion:'completion script' version:'show version' help:'help')
+  cmds=(list:'list hosts' connect:'connect to host' env:'print export SSH_AUTH_SOCK' doctor:'inspect the environment' update:'install the latest stable release' uninstall:'remove the installed executable' completion:'completion script' version:'show version' help:'help')
   if (( CURRENT == 2 )); then
     _describe 'perintah' cmds
     return
@@ -260,6 +265,7 @@ _sshm() {
     connect|c) compadd -- ${(f)"$(sshm list --names 2>/dev/null)"} ;;
     completion) compadd bash zsh ;;
     list|ls) compadd -- --names --json ;;
+    uninstall) compadd -- --yes ;;
   esac
 }
 compdef _sshm sshm
