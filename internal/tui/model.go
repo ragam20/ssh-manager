@@ -40,6 +40,7 @@ const (
 	mForm
 	mConfirm
 	mHelp
+	mInspect
 )
 
 type keyStatus int
@@ -88,6 +89,7 @@ type Model struct {
 	sortAlpha bool
 	form      *form
 	confirm   *confirmState
+	inspect   *inspectState
 	notice    string
 	final     []string
 }
@@ -401,6 +403,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Batch(m.refresh(), m.loadKnown())
 	case execDoneMsg:
 		return m.onExecDone(msg)
+	case inspectMsg:
+		if m.inspect == msg.request {
+			m.inspect.result = &msg
+		}
 	case tea.KeyMsg:
 		return m.onKey(msg)
 	case tea.MouseMsg:

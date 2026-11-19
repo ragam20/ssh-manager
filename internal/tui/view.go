@@ -63,6 +63,8 @@ func (m Model) View() string {
 		return ""
 	}
 	switch m.mode {
+	case mInspect:
+		return m.inspectView()
 	case mHelp:
 		return m.helpView()
 	case mForm:
@@ -127,7 +129,7 @@ func (m Model) helpBar() string {
 	case scKnown:
 		return " D delete entry · / search · r reload · Tab screen · ? · q"
 	}
-	return " Enter connect · Space load · a/e/D host · f ★ · t tag · p deploy · c copy · / search · Tab screen · ? · q"
+	return " Enter connect · i Inspect · Space load · a/e/D host · f ★ · t tag · p deploy · c copy · / search · Tab screen · ? · q"
 }
 
 // ---------- list ----------
@@ -427,6 +429,7 @@ func (m Model) helpView() string {
 		{"", ""},
 		{"Hosts", ""},
 		{"Enter", "connect (auto-load key)"},
+		{"i", "Inspect effective SSH config"},
 		{"Space", "load / unload key host"},
 		{"a e D", "add / edit / delete host"},
 		{"f  t  s", "favorite ★ / tag / sort"},

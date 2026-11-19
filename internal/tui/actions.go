@@ -80,6 +80,8 @@ func (m Model) hostsKey(k string) (tea.Model, tea.Cmd) {
 	switch k {
 	case "enter":
 		return m.connect(h)
+	case "i":
+		return m.inspectHost(h.Alias)
 	case " ":
 		return m.toggleHost(h)
 	case "e":

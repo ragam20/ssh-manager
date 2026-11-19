@@ -111,7 +111,7 @@ To install the release binary from a local checkout, run `sh install.sh`.
 
 | Screen | Features |
 |---|---|
-| Hosts | Connect (auto-load key), load/unload key, add/edit/delete hosts (preserves comments and config order, creates automatic backups), favorites ★, tags, recently used order, deploy and copy public keys, search (`#tag`) |
+| Hosts | Connect (auto-load key), inspect effective SSH settings (`i`), load/unload key, add/edit/delete hosts (preserves comments and config order, creates automatic backups), favorites ★, tags, recently used order, deploy and copy public keys, search (`#tag`) |
 | Keys | List keys in `~/.ssh`, agent status, weak-key and loose-permission warnings, create ed25519 keys, copy public keys, set agent key timeout (`ssh-add -t`) |
 | Tunnels | Save local/remote/SOCKS tunnels, start/stop (ControlMaster), view status |
 | Known | Audit `known_hosts`: weak keys, duplicate keys per host, revoked keys; delete entries (automatic backup) |
