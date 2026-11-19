@@ -21,7 +21,7 @@ import (
 	"sshm/internal/tui"
 )
 
-const Version = "0.2.0"
+var Version = "dev"
 
 const usage = `sshm — SSH management TUI
 
@@ -32,7 +32,7 @@ Usage:
   sshm env                  print "export SSH_AUTH_SOCK=..." (eval "$(sshm env)")
   sshm doctor               inspect the SSH environment
   sshm completion bash|zsh  print completion script
-  sshm versionon | help
+  sshm version | help
 
 Environment:
   SSHM_CONFIG   alternate SSH config path (default ~/.ssh/config);
@@ -71,7 +71,7 @@ func Run(args []string, stdout, stderr io.Writer) int {
 			return 2
 		}
 		return completion(args[1], stdout, stderr)
-	case "versionon", "-v", "--versionon":
+	case "version", "-v", "--version":
 		fmt.Fprintln(stdout, "sshm", Version)
 		return 0
 	case "help", "-h", "--help":
@@ -236,7 +236,7 @@ func missingKeys(paths []string) []string {
 const bashCompletion = `_sshm() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   if [ "$COMP_CWORD" -eq 1 ]; then
-    COMPREPLY=($(compgen -W "list connect env doctor completion versionon help" -- "$cur"))
+    COMPREPLY=($(compgen -W "list connect env doctor completion version help" -- "$cur"))
     return
   fi
   case "${COMP_WORDS[1]}" in
@@ -251,7 +251,7 @@ complete -F _sshm sshm
 const zshCompletion = `#compdef sshm
 _sshm() {
   local -a cmds
-  cmds=(list:'list hosts' connect:'connect to host' env:'print export SSH_AUTH_SOCK' doctor:'inspect the environment' completion:'completion script' versionon:'versionon' help:'help')
+  cmds=(list:'list hosts' connect:'connect to host' env:'print export SSH_AUTH_SOCK' doctor:'inspect the environment' completion:'completion script' version:'show version' help:'help')
   if (( CURRENT == 2 )); then
     _describe 'perintah' cmds
     return

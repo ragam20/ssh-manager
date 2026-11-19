@@ -55,8 +55,10 @@ func TestErrorsAndHelp(t *testing.T) {
 	if c, _, _ := run("bogus"); c != 2 {
 		t.Errorf("perintah asing: %d", c)
 	}
-	if c, out, _ := run("versionon"); c != 0 || !strings.Contains(out, Version) {
-		t.Errorf("versionon: %d %q", c, out)
+	for _, arg := range []string{"version", "--version", "-v"} {
+		if c, out, _ := run(arg); c != 0 || out != "sshm "+Version+"\n" {
+			t.Errorf("%s: %d %q", arg, c, out)
+		}
 	}
 	for _, sh := range []string{"bash", "zsh"} {
 		if c, out, _ := run("completion", sh); c != 0 || !strings.Contains(out, "sshm list --names") {
