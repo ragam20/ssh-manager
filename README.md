@@ -145,3 +145,7 @@ To install the release binary from a local checkout, run `sh install.sh`.
     internal/fsutil/      atomic writes and backups
     internal/sshcmd/      ssh arguments and execution
     internal/paths/       file locations
+
+## Screenshot
+
+![sshm terminal interface](doc/img/app.png)
