@@ -70,6 +70,8 @@ Host demo
 		t.Fatal(err)
 	}
 	opened, cmd = closed.Update(inspect)
+	// Leave room for OpenSSH's config path before checking the full diagnostic.
+	opened, _ = opened.Update(tea.WindowSizeMsg{Width: len(config) + 80, Height: 10})
 	loaded, _ = opened.Update(cmd())
 	if view := loaded.View(); !strings.Contains(view, "Bad configuration option") {
 		t.Errorf("OpenSSH error missing from view:\n%s", view)
