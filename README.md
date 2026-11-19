@@ -120,11 +120,17 @@ To install the release binary from a local checkout, run `sh install.sh`.
 
     sshm list [-n] [--json]     list hosts
     sshm connect <host>         connect directly
+    sshm tunnel list            show saved tunnel names, IDs, and status
+    sshm tunnel start <name|id>
+    sshm tunnel stop <name|id>
     sshm env                    eval "$(sshm env)"
     sshm doctor                 inspect the SSH environment
     sshm completion bash|zsh    print shell completion script
 
 `SSHM_CONFIG` overrides the SSH config path (also used with `ssh -F`).
+
+The tunnel commands use the tunnels saved in the Tunnels screen. If a name is
+shared by multiple tunnels, use the ID shown by `sshm tunnel list`.
 
 ## Data owned by sshm
 

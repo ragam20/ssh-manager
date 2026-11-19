@@ -33,6 +33,9 @@ Usage:
   sshm                      open the TUI
   sshm list [-n] [--json]   list hosts (-n: aliases only)
   sshm connect <host>       connect directly (auto-load key)
+  sshm tunnel list          list saved tunnels and their status
+  sshm tunnel start <name|id>
+  sshm tunnel stop <name|id>
   sshm env                  print "export SSH_AUTH_SOCK=..." (eval "$(sshm env)")
   sshm doctor               inspect the SSH environment
   sshm update               install the latest stable release
@@ -60,6 +63,8 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 			return 2
 		}
 		return fail(stderr, connect(p, args[1]))
+	case "tunnel":
+		return tunnelCommand(p.State, args[1:], stdin, stdout, stderr)
 	case "env":
 		if err := agent.Ensure(); err != nil {
 			return fail(stderr, err)
@@ -244,11 +249,12 @@ func missingKeys(paths []string) []string {
 const bashCompletion = `_sshm() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   if [ "$COMP_CWORD" -eq 1 ]; then
-    COMPREPLY=($(compgen -W "list connect env doctor update uninstall completion version help" -- "$cur"))
+    COMPREPLY=($(compgen -W "list connect tunnel env doctor update uninstall completion version help" -- "$cur"))
     return
   fi
   case "${COMP_WORDS[1]}" in
     connect|c) COMPREPLY=($(compgen -W "$(sshm list --names 2>/dev/null)" -- "$cur")) ;;
+    tunnel) if [ "$COMP_CWORD" -eq 2 ]; then COMPREPLY=($(compgen -W "list start stop" -- "$cur")); fi ;;
     completion) COMPREPLY=($(compgen -W "bash zsh" -- "$cur")) ;;
     list|ls) COMPREPLY=($(compgen -W "--names --json" -- "$cur")) ;;
     uninstall) COMPREPLY=($(compgen -W "--yes" -- "$cur")) ;;
@@ -260,13 +266,14 @@ complete -F _sshm sshm
 const zshCompletion = `#compdef sshm
 _sshm() {
   local -a cmds
-  cmds=(list:'list hosts' connect:'connect to host' env:'print export SSH_AUTH_SOCK' doctor:'inspect the environment' update:'install the latest stable release' uninstall:'remove the installed executable' completion:'completion script' version:'show version' help:'help')
+  cmds=(list:'list hosts' connect:'connect to host' tunnel:'manage saved tunnels' env:'print export SSH_AUTH_SOCK' doctor:'inspect the environment' update:'install the latest stable release' uninstall:'remove the installed executable' completion:'completion script' version:'show version' help:'help')
   if (( CURRENT == 2 )); then
     _describe 'perintah' cmds
     return
   fi
   case $words[2] in
     connect|c) compadd -- ${(f)"$(sshm list --names 2>/dev/null)"} ;;
+    tunnel) if (( CURRENT == 3 )); then compadd list start stop; fi ;;
     completion) compadd bash zsh ;;
     list|ls) compadd -- --names --json ;;
     uninstall) compadd -- --yes ;;
